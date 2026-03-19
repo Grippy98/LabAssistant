@@ -1,0 +1,26 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+frontend/dist/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+backend/build/
+backend/dist/
+*.spec
+
+# Electron
+*.log
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db

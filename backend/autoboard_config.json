@@ -1,0 +1,19 @@
+{
+    "setups": [
+        {
+            "name": "BeagleY",
+            "jetkvm_ip": "192.168.1.92",
+            "sd_swap_address": "7-6.4.3",
+            "serial_port": "/dev/ttyUSB0",
+            "ssh_user": "root",
+            "ssh_host": "",
+            "ha_entity_id": "switch.usw_ultra_poe_out_data_poe_7",
+            "id": "setup_325",
+            "ha_sensor_ids": [
+                "sensor.usw_ultra_poe_out_data_poe_power_7"
+            ]
+        }
+    ],
+    "ha_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4YzRkYzk4MzRkZjE0MTM5ODA3MDE1MTcxYTZjOGE2OSIsImlhdCI6MTc3Mzg0MzI0MSwiZXhwIjoyMDg5MjAzMjQxfQ.pXP32jofHdUV-rX5_rsOjRKuVVkD_SsckW6ye-iuIWc",
+    "ha_url": "http://homeassistant.local:8123/"
+}

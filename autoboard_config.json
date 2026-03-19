@@ -1,0 +1,17 @@
+{
+    "setups": [
+        {
+            "name": "Test1",
+            "jetkvm_ip": "",
+            "sd_swap_address": "",
+            "serial_port": "",
+            "ssh_user": "root",
+            "ssh_host": "",
+            "ha_entity_id": "",
+            "ha_sensor_ids": [],
+            "id": "setup_654"
+        }
+    ],
+    "ha_token": "",
+    "ha_url": ""
+}
