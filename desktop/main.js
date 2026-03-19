@@ -39,17 +39,27 @@ function createWindow() {
   ipcMain.on('window-close', () => mainWindow.close());
 
   // In development, load from Vite
-  // In production, we'd load the build/index.html
+  // In production, we load the build/index.html
   const isDev = !app.isPackaged;
-  const startUrl = isDev 
-    ? 'http://localhost:5173' 
-    : `file://${path.join(__dirname, '../frontend/dist/index.html')}`;
-
-  mainWindow.loadURL(startUrl);
-
   if (isDev) {
+    mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../frontend/dist/index.html'));
   }
+
+  // Debug shortcut for production
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    const isMac = process.platform === 'darwin';
+    const toggleDevTools = isMac 
+      ? (input.meta && input.alt && input.key.toLowerCase() === 'i')
+      : (input.control && input.shift && input.key.toLowerCase() === 'i');
+    
+    if (toggleDevTools) {
+      mainWindow.webContents.toggleDevTools();
+      event.preventDefault();
+    }
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
