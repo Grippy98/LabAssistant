@@ -87,6 +87,15 @@ function startBackend() {
     console.log(`Using bundled backend: ${bundledPath}`);
     pythonPath = bundledPath;
     args = [];
+    
+    // Ensure execution permissions on macOS/Linux
+    if (process.platform !== 'win32') {
+      try {
+        fs.chmodSync(bundledPath, 0o755);
+      } catch (e) {
+        console.error('Failed to set execute permissions:', e);
+      }
+    }
   } else {
     // Fallback to dev venv
     const venvPath = isWin 

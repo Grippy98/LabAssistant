@@ -15,7 +15,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Update actions
   checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
   downloadUpdate: () => ipcRenderer.invoke('download-update'),
-  installUpdate: () => ipcRenderer.invoke('install-update')
+  installUpdate: () => ipcRenderer.invoke('install-update'),
+  platform: process.platform
 });
 
 window.addEventListener('DOMContentLoaded', () => {
