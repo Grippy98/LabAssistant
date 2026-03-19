@@ -60,10 +60,8 @@
       ]
     },
     "nsis": {
-      "differentialPackage": false
     },
     "appImage": {
-      "differentialPackage": false
     },
     "mac": {
       "target": [
