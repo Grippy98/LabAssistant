@@ -47,7 +47,20 @@ npm install
 npm run dev
 ```
 
-## Building for Release
+## Automated Releases
+This repository is configured with **GitHub Actions** to automatically build and release LabAssistant for Linux, Windows, and macOS.
+
+To trigger a new release:
+1. Update the version in `package.json`.
+2. Commit and push the changes.
+3. Push a new tag:
+   ```bash
+   git tag v2026.3.20
+   git push origin v2026.3.20
+   ```
+GitHub will automatically build the installers and attach them to a new Release draft.
+
+## Building Locally
 To generate cross-platform packages:
 ```bash
 # Build backend executable
