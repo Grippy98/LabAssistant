@@ -16,6 +16,24 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [connectionError, setConnectionError] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  const [updateInfo, setUpdateInfo] = useState(null);
+  const [updateProgress, setUpdateProgress] = useState(null);
+  const [updateDownloaded, setUpdateDownloaded] = useState(false);
+  const [autoUpdateEnabled, setAutoUpdateEnabled] = useState(localStorage.getItem('autoUpdate') !== 'false');
+
+  useEffect(() => {
+    if (window.electronAPI) {
+      window.electronAPI.onUpdateAvailable((info) => setUpdateInfo(info));
+      window.electronAPI.onUpdateNotAvailable(() => console.log("No updates available"));
+      window.electronAPI.onUpdateError((msg) => console.error("Update error:", msg));
+      window.electronAPI.onUpdateProgress((p) => setUpdateProgress(p));
+      window.electronAPI.onUpdateDownloaded(() => setUpdateDownloaded(true));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('autoUpdate', autoUpdateEnabled);
+  }, [autoUpdateEnabled]);
 
   useEffect(() => {
     const applyTheme = () => {
@@ -107,6 +125,35 @@ function App() {
   return (
     <>
       <TitleBar />
+      {updateInfo && (
+        <div className="update-banner">
+          <div style={{display:'flex', alignItems:'center', gap:'12px'}}>
+            <RefreshCw size={16} className={updateProgress ? 'spin' : ''} />
+            <div>
+              <span style={{fontWeight:600}}>Update Available: {updateInfo.version}</span>
+              {updateProgress && (
+                <div style={{fontSize:'0.75rem', color:'var(--text-muted)'}}>
+                  Downloading: {Math.round(updateProgress.percent)}%
+                </div>
+              )}
+              {updateDownloaded && <div style={{fontSize:'0.75rem', color:'var(--accent)'}}>Download complete!</div>}
+            </div>
+          </div>
+          <div style={{display:'flex', gap:'8px'}}>
+            {!updateProgress && !updateDownloaded && (
+              <button className="btn btn-primary" onClick={() => window.electronAPI.downloadUpdate()}>
+                Download Now
+              </button>
+            )}
+            {updateDownloaded && (
+              <button className="btn btn-success" onClick={() => window.electronAPI.installUpdate()}>
+                Restart & Install
+              </button>
+            )}
+            <button className="btn" onClick={() => setUpdateInfo(null)}>Dismiss</button>
+          </div>
+        </div>
+      )}
       <div className="app-layout">
         <aside className="sidebar">
           <div className="sidebar-header">
@@ -157,6 +204,17 @@ function App() {
                   <Monitor size={14} />
                 </button>
               </div>
+            </div>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.5rem'}}>
+              <span style={{fontSize:'0.7rem', color:'var(--text-muted)', fontWeight:600}}>UPDATES</span>
+              <label className="switch">
+                <input 
+                  type="checkbox" 
+                  checked={autoUpdateEnabled} 
+                  onChange={(e) => setAutoUpdateEnabled(e.target.checked)} 
+                />
+                <span className="slider round"></span>
+              </label>
             </div>
             <button className="btn" style={{width:'100%', justifyContent:'center'}} onClick={() => setShowConfig(true)}>
               <Settings size={14} /> Global Config

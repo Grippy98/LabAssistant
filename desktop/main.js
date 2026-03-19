@@ -2,9 +2,13 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
+const { autoUpdater } = require('electron-updater');
 
 let mainWindow;
 let pythonProcess;
+
+// Configure autoUpdater
+autoUpdater.autoDownload = false; // We'll let the user decide or handle it via settings
 
 // Prevent EPIPE crashes
 process.on('uncaughtException', (err) => {
@@ -106,6 +110,44 @@ function startBackend() {
 app.whenReady().then(() => {
   startBackend();
   createWindow();
+
+  // Auto-updater handlers
+  autoUpdater.on('update-available', (info) => {
+    if (mainWindow) mainWindow.webContents.send('update-available', info);
+  });
+
+  autoUpdater.on('update-not-available', () => {
+    if (mainWindow) mainWindow.webContents.send('update-not-available');
+  });
+
+  autoUpdater.on('error', (err) => {
+    if (mainWindow) mainWindow.webContents.send('update-error', err.message);
+  });
+
+  autoUpdater.on('download-progress', (progress) => {
+    if (mainWindow) mainWindow.webContents.send('update-progress', progress);
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    if (mainWindow) mainWindow.webContents.send('update-downloaded');
+  });
+
+  ipcMain.handle('check-for-updates', async () => {
+    return await autoUpdater.checkForUpdates();
+  });
+
+  ipcMain.handle('download-update', async () => {
+    return await autoUpdater.downloadUpdate();
+  });
+
+  ipcMain.handle('install-update', () => {
+    autoUpdater.quitAndInstall();
+  });
+
+  // Check for updates on startup if packaged
+  if (app.isPackaged) {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
