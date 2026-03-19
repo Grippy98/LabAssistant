@@ -57,7 +57,12 @@
             "arm64"
           ]
         }
-      ],
+      ]
+    },
+    "nsis": {
+      "differentialPackage": false
+    },
+    "appImage": {
       "differentialPackage": false
     },
     "mac": {
