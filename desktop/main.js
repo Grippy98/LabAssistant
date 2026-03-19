@@ -107,8 +107,15 @@ function startBackend() {
     console.log(`Using python fallback: ${pythonPath}`);
   }
 
+  const cwd = path.dirname(pythonPath);
   pythonProcess = spawn(pythonPath, args, {
+    cwd,
     env: { ...process.env, ELECTRON_RUN_AS_NODE: '0' }
+  });
+
+  pythonProcess.on('error', (err) => {
+    console.error('Failed to spawn backend:', err);
+    if (mainWindow) mainWindow.webContents.send('backend-err', `Failed to spawn backend: ${err.message}`);
   });
 
   pythonProcess.stdout.on('data', (data) => {
